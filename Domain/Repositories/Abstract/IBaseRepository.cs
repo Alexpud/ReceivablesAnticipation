@@ -12,5 +12,6 @@ namespace Domain.Repositories.Abstract
         void Remove(int id);
         Entity ObtainById(int id);
         IQueryable<Entity> ObtainAll();
+        int SaveChanges();
     }
 }

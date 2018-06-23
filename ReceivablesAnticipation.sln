@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReceivablesAnticipation", "ReceivablesAnticipation\ReceivablesAnticipation.csproj", "{58B297C6-CE09-4EDE-86EC-CE7CE9D38F89}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReceivablesAnticipation", "ReceivablesAnticipation\ReceivablesAnticipation.csproj", "{58B297C6-CE09-4EDE-86EC-CE7CE9D38F89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{0A47B413-AC5E-409D-A793-D09F5D231511}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{0A47B413-AC5E-409D-A793-D09F5D231511}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReceivablesAnticipationTests", "ReceivablesAnticipationTests\ReceivablesAnticipationTests.csproj", "{3197504E-F258-41DA-B3DA-EE7D39540722}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{0A47B413-AC5E-409D-A793-D09F5D231511}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A47B413-AC5E-409D-A793-D09F5D231511}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A47B413-AC5E-409D-A793-D09F5D231511}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3197504E-F258-41DA-B3DA-EE7D39540722}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3197504E-F258-41DA-B3DA-EE7D39540722}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3197504E-F258-41DA-B3DA-EE7D39540722}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3197504E-F258-41DA-B3DA-EE7D39540722}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

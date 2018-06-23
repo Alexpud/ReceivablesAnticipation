@@ -6,3 +6,6 @@
 /Domain/obj
 /ReceivablesAnticipation/obj
 /Domain/bin/Debug/netcoreapp2.0
+**/bin/
+**/obj/
+/.vs/config

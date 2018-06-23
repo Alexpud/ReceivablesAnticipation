@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Domain.Entities
+namespace ReceivablesAnticipation.DTOs
 {
-    public class Transaction
+    public class TransactionDTO
     {
-        [Key]
         public int TransactionID { get; set; }
         public DateTime TransactionDate { get; set; }
         public DateTime PassThroughDate { get; set; }

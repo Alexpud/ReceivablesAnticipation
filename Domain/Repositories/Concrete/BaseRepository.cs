@@ -41,5 +41,10 @@ namespace Domain.Repositories.Concrete
             Entity entity = ObtainById(id);
             _context.Set<Entity>().Remove(entity);
         }
+
+        public int SaveChanges()
+        {
+            return _context.SaveChanges();
+        }
     }
 }

@@ -32,6 +32,7 @@ namespace ReceivablesAnticipation
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<ITransactionRepository, EFTransactionRepository>();
+            services.AddScoped<ITransactionAnticipationRepository, EFTransactionAnticipationRepository>();
             services.AddAutoMapper();
             services.AddMvc();
         }

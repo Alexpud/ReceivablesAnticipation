@@ -9,6 +9,7 @@ namespace Domain
     public class AppDbContext : DbContext
     {
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<TransactionAnticipation> TransactionAnticipations { get; set; }
 
         public AppDbContext(DbContextOptions options) : base(options)
         {

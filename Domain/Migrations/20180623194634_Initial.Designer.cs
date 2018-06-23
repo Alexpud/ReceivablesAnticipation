@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20180623140524_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20180623194634_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,8 +27,6 @@ namespace Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("DtTransaction");
-
                     b.Property<bool>("FlConfirmation");
 
                     b.Property<int>("InstalmentQuantity");
@@ -37,11 +35,46 @@ namespace Domain.Migrations
 
                     b.Property<decimal>("PassThroughValue");
 
+                    b.Property<int>("TransactionAnticipationID");
+
+                    b.Property<DateTime>("TransactionDate");
+
                     b.Property<decimal>("TransactionValue");
 
                     b.HasKey("TransactionID");
 
+                    b.HasIndex("TransactionAnticipationID");
+
                     b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("Domain.Entities.TransactionAnticipation", b =>
+                {
+                    b.Property<int>("TransactionAnticipationID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("AnalysisDate");
+
+                    b.Property<bool>("AnticipationResult");
+
+                    b.Property<DateTime>("SolicitationDate");
+
+                    b.Property<decimal>("TotalPassThroughValue");
+
+                    b.Property<decimal>("TotalTransactionValue");
+
+                    b.HasKey("TransactionAnticipationID");
+
+                    b.ToTable("TransactionAnticipations");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Transaction", b =>
+                {
+                    b.HasOne("Domain.Entities.TransactionAnticipation", "TransactionAnticipation")
+                        .WithMany("Transactions")
+                        .HasForeignKey("TransactionAnticipationID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

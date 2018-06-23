@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Domain.Entities
@@ -15,5 +16,8 @@ namespace Domain.Entities
         public decimal TransactionValue { get; set; }
         public decimal PassThroughValue { get; set; }
         public int InstalmentQuantity { get; set; }
+        public int TransactionAnticipationID{ get; set; }
+        [ForeignKey("TransactionAnticipationID")]
+        public virtual TransactionAnticipation TransactionAnticipation { get; set; }
     }
 }

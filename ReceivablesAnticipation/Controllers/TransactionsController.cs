@@ -38,7 +38,6 @@ namespace ReceivablesAnticipation.Controllers
             if (!transactions.Any())
                 return StatusCode((int)HttpStatusCode.NoContent);
 
-            //_logger.LogInformation("Teste");
             var dtos = transactions.ProjectTo<TransactionDTO>(transactions);
             return Ok(dtos);
         }

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20180624123815_Nullables")]
-    partial class Nullables
+    [Migration("20180624192508_AttributeChange")]
+    partial class AttributeChange
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,13 +21,26 @@ namespace Domain.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Domain.Entities.ShopKeeper", b =>
+                {
+                    b.Property<int>("ShopKeeperID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("ShopKeeperID");
+
+                    b.ToTable("ShopKeepers");
+                });
+
             modelBuilder.Entity("Domain.Entities.Transaction", b =>
                 {
                     b.Property<int>("TransactionID")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("FlConfirmation");
+                    b.Property<bool>("AcquirerApproval");
 
                     b.Property<int>("InstalmentQuantity");
 
@@ -58,6 +71,8 @@ namespace Domain.Migrations
 
                     b.Property<bool?>("AnticipationResult");
 
+                    b.Property<int>("ShopKeeperID");
+
                     b.Property<DateTime>("SolicitationDate");
 
                     b.Property<int>("Status");
@@ -68,6 +83,8 @@ namespace Domain.Migrations
 
                     b.HasKey("TransactionAnticipationID");
 
+                    b.HasIndex("ShopKeeperID");
+
                     b.ToTable("TransactionAnticipations");
                 });
 
@@ -76,6 +93,14 @@ namespace Domain.Migrations
                     b.HasOne("Domain.Entities.TransactionAnticipation", "TransactionAnticipation")
                         .WithMany("Transactions")
                         .HasForeignKey("TransactionAnticipationID");
+                });
+
+            modelBuilder.Entity("Domain.Entities.TransactionAnticipation", b =>
+                {
+                    b.HasOne("Domain.Entities.ShopKeeper", "ShopKeeper")
+                        .WithMany("TransactionAnticipations")
+                        .HasForeignKey("ShopKeeperID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

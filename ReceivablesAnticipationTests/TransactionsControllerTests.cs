@@ -20,6 +20,7 @@ namespace ReceivablesAnticipationTests
         private readonly AppDbContext _context;
         private readonly EFTransactionRepository _transactionRepository;
         private readonly EFTransactionAnticipationRepository _transactionAnticipationRepository;
+        private readonly EFShopKeeperRepository _shopKeeperRepository;
         private TransactionsController _controller;
 
         public TransactionsControllerTests(ITestOutputHelper output)
@@ -38,6 +39,7 @@ namespace ReceivablesAnticipationTests
             _context = new AppDbContext(dbOptions);
             _transactionRepository = new EFTransactionRepository(_context);
             _transactionAnticipationRepository = new EFTransactionAnticipationRepository(_context);
+            _shopKeeperRepository = new EFShopKeeperRepository(_context);
             _controller = new TransactionsController
                 (_transactionRepository, _transactionAnticipationRepository, mapper);
         }
@@ -50,7 +52,7 @@ namespace ReceivablesAnticipationTests
             //var transaction = _transactionRepository.ObtainAll().FirstOrDefault();
             Transaction transaction = new Transaction()
             {
-                FlConfirmation = false,
+                AcquirerApproval = true,
                 TransactionDate = DateTime.Now,
                 PassThroughValue = 0,
                 PassThroughDate = DateTime.Now,
@@ -71,10 +73,17 @@ namespace ReceivablesAnticipationTests
         [Fact]
         public void RequestAnticipationTest()
         {
+            ShopKeeper shopKeeper = new ShopKeeper()
+            {
+                Name = "Mario"
+            };
+
+            _shopKeeperRepository.Insert(shopKeeper);
+            _shopKeeperRepository.SaveChanges();
 
             Transaction transaction = new Transaction()
             {
-                FlConfirmation = false,
+                AcquirerApproval = true,
                 TransactionDate = DateTime.Now,
                 PassThroughValue = 0,
                 PassThroughDate = DateTime.Now,
@@ -84,7 +93,7 @@ namespace ReceivablesAnticipationTests
 
             Transaction transaction2 = new Transaction()
             {
-                FlConfirmation = false,
+                AcquirerApproval = true,
                 TransactionDate = DateTime.Now,
                 PassThroughValue = 0,
                 PassThroughDate = DateTime.Now,
@@ -95,7 +104,7 @@ namespace ReceivablesAnticipationTests
 
             Transaction transaction3 = new Transaction()
             {
-                FlConfirmation = false,
+                AcquirerApproval = true,
                 TransactionDate = DateTime.Now,
                 PassThroughValue = 0,
                 PassThroughDate = DateTime.Now,
@@ -110,6 +119,7 @@ namespace ReceivablesAnticipationTests
 
             RequestedTransactionsDTO dto = new RequestedTransactionsDTO()
             {
+                ShopKeeperID = shopKeeper.ShopKeeperID,
                 TransactionIDs = new List<int>()
                 {
                     transaction.TransactionID, transaction2.TransactionID
@@ -128,7 +138,7 @@ namespace ReceivablesAnticipationTests
         {
             Transaction transaction = new Transaction()
             {
-                FlConfirmation = false,
+                AcquirerApproval = true,
                 TransactionDate = DateTime.Now,
                 PassThroughValue = 0,
                 PassThroughDate = DateTime.Now,
@@ -138,7 +148,7 @@ namespace ReceivablesAnticipationTests
 
             Transaction transaction2 = new Transaction()
             {
-                FlConfirmation = false,
+                AcquirerApproval = true,
                 TransactionDate = DateTime.Now,
                 PassThroughValue = 0,
                 PassThroughDate = DateTime.Now,
@@ -149,7 +159,7 @@ namespace ReceivablesAnticipationTests
 
             Transaction transaction3 = new Transaction()
             {
-                FlConfirmation = false,
+                AcquirerApproval = true,
                 TransactionDate = DateTime.Now,
                 PassThroughValue = 0,
                 PassThroughDate = DateTime.Now,

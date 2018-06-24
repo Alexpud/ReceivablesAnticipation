@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20180623194634_Initial")]
-    partial class Initial
+    [Migration("20180624190951_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,19 @@ namespace Domain.Migrations
                 .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Domain.Entities.ShopKeeper", b =>
+                {
+                    b.Property<int>("ShopKeeperID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("ShopKeeperID");
+
+                    b.ToTable("ShopKeepers");
+                });
 
             modelBuilder.Entity("Domain.Entities.Transaction", b =>
                 {
@@ -35,7 +48,7 @@ namespace Domain.Migrations
 
                     b.Property<decimal>("PassThroughValue");
 
-                    b.Property<int>("TransactionAnticipationID");
+                    b.Property<int?>("TransactionAnticipationID");
 
                     b.Property<DateTime>("TransactionDate");
 
@@ -54,17 +67,23 @@ namespace Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("AnalysisDate");
+                    b.Property<DateTime?>("AnalysisDate");
 
-                    b.Property<bool>("AnticipationResult");
+                    b.Property<bool?>("AnticipationResult");
+
+                    b.Property<int>("ShopKeeperID");
 
                     b.Property<DateTime>("SolicitationDate");
+
+                    b.Property<int>("Status");
 
                     b.Property<decimal>("TotalPassThroughValue");
 
                     b.Property<decimal>("TotalTransactionValue");
 
                     b.HasKey("TransactionAnticipationID");
+
+                    b.HasIndex("ShopKeeperID");
 
                     b.ToTable("TransactionAnticipations");
                 });
@@ -73,7 +92,14 @@ namespace Domain.Migrations
                 {
                     b.HasOne("Domain.Entities.TransactionAnticipation", "TransactionAnticipation")
                         .WithMany("Transactions")
-                        .HasForeignKey("TransactionAnticipationID")
+                        .HasForeignKey("TransactionAnticipationID");
+                });
+
+            modelBuilder.Entity("Domain.Entities.TransactionAnticipation", b =>
+                {
+                    b.HasOne("Domain.Entities.ShopKeeper", "ShopKeeper")
+                        .WithMany("TransactionAnticipations")
+                        .HasForeignKey("ShopKeeperID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

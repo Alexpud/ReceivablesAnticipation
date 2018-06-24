@@ -10,6 +10,7 @@ namespace Domain
     {
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<TransactionAnticipation> TransactionAnticipations { get; set; }
+        public virtual DbSet<ShopKeeper> ShopKeepers{ get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {

@@ -7,6 +7,7 @@ namespace ReceivablesAnticipation.DTOs
 {
     public class RequestedTransactionsDTO
     {
+        public int ShopKeeperID { get; set; }
         public List<int> TransactionIDs { get; set; }
     }
 }

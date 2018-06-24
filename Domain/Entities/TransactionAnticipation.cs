@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Domain.Entities
@@ -15,6 +16,9 @@ namespace Domain.Entities
         public decimal TotalTransactionValue { get; set; }
         public decimal TotalPassThroughValue { get; set; }
         public int Status { get; set; }
+        public int ShopKeeperID { get; set; }
+        [ForeignKey("ShopKeeperID")]
+        public virtual ShopKeeper ShopKeeper { get; set; }
         public virtual List<Transaction> Transactions { get; set; }
     }
 }

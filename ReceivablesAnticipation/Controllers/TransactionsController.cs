@@ -54,13 +54,18 @@ namespace ReceivablesAnticipation.Controllers
             decimal transactionsAnticipationValue = 0;
             decimal totalTransactionValue = 0;
 
-            // Get transactions
+            bool ongoingAnticipations = _transactionAnticipationRepository
+                .OnGoingTransactionAnticipationForShopKeeper(dto.ShopKeeperID).Any();
+
+            if (ongoingAnticipations)
+                return BadRequest("There are on going transaction anticipations for shop keeper");
+
             foreach (var transactionID in dto.TransactionIDs)
             {
                 var transaction = _transactionRepository.ObtainAnticipatableTransactions()
                     .FirstOrDefault(x => x.TransactionID == transactionID);
 
-                if (transaction != null)
+                if (transaction != null && transaction.AcquirerApproval)
                 {
                     decimal instalmentValue = transaction.TransactionValue / transaction.InstalmentQuantity;
                     totalTransactionValue += transaction.TransactionValue;
@@ -70,7 +75,7 @@ namespace ReceivablesAnticipation.Controllers
             }
 
             if (!transactions.Any())
-                return BadRequest();
+                return BadRequest("No anticipable transactions");
 
             TransactionAnticipation transactionAnticipation = new TransactionAnticipation()
             {

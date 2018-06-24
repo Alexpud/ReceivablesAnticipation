@@ -12,7 +12,7 @@ namespace Domain.Entities
         public int TransactionID { get; set; }
         public DateTime TransactionDate { get; set; }
         public DateTime PassThroughDate { get; set; }
-        public bool FlConfirmation { get; set; }
+        public bool AcquirerApproval { get; set; }
         public decimal TransactionValue { get; set; }
         public decimal PassThroughValue { get; set; }
         public int InstalmentQuantity { get; set; }

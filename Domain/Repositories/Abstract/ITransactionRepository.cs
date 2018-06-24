@@ -8,6 +8,7 @@ namespace Domain.Repositories.Abstract
 {
     public interface ITransactionRepository : IBaseRepository<Transaction>
     {
-        IQueryable<Transaction> ObtainTransactionsWithAnticipations();
+        IQueryable<Transaction> ObtainTransactionAnticipation();
+        IQueryable<Transaction> ObtainAnticipatableTransactions();
     }
 }

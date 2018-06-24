@@ -16,10 +16,19 @@ namespace Domain.Repositories.Concrete
             _context = context;
         }
 
-        public IQueryable<Transaction> ObtainTransactionsWithAnticipations()
+        /// <summary>
+        /// Returns transactions and their anticipation
+        /// </summary>
+        public IQueryable<Transaction> ObtainTransactionAnticipation()
         {
             return (from transaction in _context.Transactions.Include("TransactionAnticipation")
-                    where transaction.TransactionAnticipation != null
+                    select transaction);
+        }
+
+        public IQueryable<Transaction> ObtainAnticipatableTransactions()
+        {
+            return (from transaction in _context.Transactions.Include("TransactionAnticipation")
+                    where transaction.TransactionAnticipation == null
                     select transaction);
         }
     }

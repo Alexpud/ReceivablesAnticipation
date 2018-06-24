@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Repositories.Abstract;
 using Domain.Repositories.Concrete;
 using AutoMapper;
+using System.Reflection;
 
 namespace ReceivablesAnticipation
 {

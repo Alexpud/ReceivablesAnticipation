@@ -14,6 +14,9 @@ namespace ReceivablesAnticipation
         {
             CreateMap<Transaction, TransactionDTO>();
             CreateMap<TransactionDTO, Transaction>();
+
+            CreateMap<TransactionAnticipation, TransactionAnticipationDTO>();
+            CreateMap<TransactionAnticipationDTO, TransactionAnticipation>();
         }
     }
 }

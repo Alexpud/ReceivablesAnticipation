@@ -19,20 +19,91 @@ namespace ReceivablesAnticipation.Controllers
     public class TransactionsController : ControllerBase
     {
         private readonly ITransactionRepository _transactionRepository;
+        private readonly ITransactionAnticipationRepository _transactionAnticipationRepository;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public TransactionsController(ITransactionRepository repository, IMapper mapper)
+        #region Constructor
+
+        public TransactionsController(ITransactionRepository transactionRepository, 
+            ITransactionAnticipationRepository transactionAnticipationRepository, 
+            IMapper mapper)
         {
-            _transactionRepository = repository;
+            _transactionRepository = transactionRepository;
+            _transactionAnticipationRepository = transactionAnticipationRepository;
             _mapper = mapper;
         }
 
-        #region ObtainTransactions
+        #endregion
 
-        [HttpGet(Name = "ObtainTransactions")]
+        #region RequestAnticipation
+
+        [HttpPost]
+        [Route("Anticipation")]
+        public IActionResult RequestAnticipation(RequestedTransactionsDTO dto)
+        {
+            List<Transaction> transactions = new List<Transaction>();
+            decimal transactionsAnticipationValue = 0;
+            decimal totalTransactionValue = 0;
+
+            // Get transactions
+            foreach (var transactionID in dto.TransactionIDs)
+            {
+                var transaction = _transactionRepository.ObtainById(transactionID);
+                if (transaction != null)
+                {
+                    decimal instalmentValue = transaction.TransactionValue / transaction.InstalmentQuantity;
+                    totalTransactionValue += transaction.TransactionValue;
+                    transactionsAnticipationValue += ((instalmentValue * (decimal)3.8) / 100) * transaction.InstalmentQuantity;
+                    transactions.Add(transaction);
+                }
+            }
+
+            TransactionAnticipation transactionAnticipation = new TransactionAnticipation()
+            {
+                AnticipationResult = null,
+                Status = 1,
+                SolicitationDate = DateTime.Now,
+                TotalPassThroughValue = totalTransactionValue - transactionsAnticipationValue,
+                TotalTransactionValue = totalTransactionValue,
+                AnalysisDate = null,
+                Transactions = transactions
+            };
+
+            _transactionAnticipationRepository.Insert(transactionAnticipation);
+            int result = _transactionAnticipationRepository.SaveChanges();
+            if (result == 0)
+                return StatusCode((int)HttpStatusCode.NotModified);
+
+            return CreatedAtAction("GetAnticipationRequest", 
+                new { transactionAnticipationID = transactionAnticipation.TransactionAnticipationID}, transactionAnticipation);
+        }
+
+        #endregion
+
+        #region GetAnticipationRequest
+
+        [HttpGet(Name = "GetAnticipationRequest")]
+        [Route("Anticipation/{transactionAnticipationID}")]
+        public IActionResult GetAnticipationRequest(int transactionAnticipationID)
+        {
+            TransactionAnticipation transactionAnticipation = _transactionAnticipationRepository
+                .ObtainById(transactionAnticipationID);
+
+            if (transactionAnticipation == null)
+                return StatusCode((int)HttpStatusCode.NoContent);
+
+            var dto = _mapper.Map<TransactionAnticipation, TransactionAnticipationDTO>(transactionAnticipation);
+            return Ok(dto);
+        }
+
+        #endregion
+
+        #region GetTransactions
+
+        [HttpGet(Name = "GetTransactions")]
         [Route("")]
-        public IActionResult ObtainTransactions()
+        public IActionResult GetTransactions()
         {
             var transactions = _transactionRepository.ObtainAll();
             if (!transactions.Any())
@@ -44,11 +115,27 @@ namespace ReceivablesAnticipation.Controllers
 
         #endregion
 
-        #region ObtainTransaction
+        #region GetAvailableTransactions
 
-        [HttpGet("ObtainTransaction")]
+        [HttpGet]
+        [Route("Available")]
+        public IActionResult GetAvailableTransactions()
+        {
+            var transactions = _transactionRepository.ObtainTransactionsWithAnticipations();
+            if (!transactions.Any())
+                return StatusCode((int)HttpStatusCode.NoContent);
+
+            var dtos = transactions.ProjectTo<TransactionDTO>(transactions);
+            return Ok(dtos);
+        }
+
+        #endregion
+
+        #region GetTransaction
+
+        [HttpGet("GetTransaction")]
         [Route("{transactionID}")]
-        public IActionResult ObtainTransaction(int transactionID)
+        public IActionResult GetTransaction(int transactionID)
         {
             var transaction = _transactionRepository.ObtainById(transactionID);
             if (transaction == null)
@@ -68,6 +155,10 @@ namespace ReceivablesAnticipation.Controllers
         {
 
             var transacao = _mapper.Map<TransactionDTO, Transaction>(dto);
+
+            transacao.PassThroughValue = transacao.TransactionValue - (decimal)0.90;
+            transacao.PassThroughDate = DateTime.Now;
+
             _transactionRepository.Insert(transacao);
             int result = _transactionRepository.SaveChanges();
 

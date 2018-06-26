@@ -44,30 +44,6 @@ namespace ReceivablesAnticipationTests
                 (_transactionRepository, _transactionAnticipationRepository, mapper);
         }
 
-        #region GetTransactionTest
-
-        [Fact]
-        public void GetTransactionTest()
-        {
-            //var transaction = _transactionRepository.ObtainAll().FirstOrDefault();
-            Transaction transaction = new Transaction()
-            {
-                AcquirerApproval = true,
-                TransactionDate = DateTime.Now,
-                PassThroughValue = 0,
-                PassThroughDate = DateTime.Now,
-                TransactionValue = 0
-            };
-
-            _context.Transactions.Add(transaction);
-            _context.SaveChanges();
-
-            var result = _controller.GetTransaction(transaction.TransactionID);
-            Assert.IsType<OkObjectResult>(result);
-        }
-
-        #endregion
-
         #region RequestAnticipationTest
 
         [Fact]

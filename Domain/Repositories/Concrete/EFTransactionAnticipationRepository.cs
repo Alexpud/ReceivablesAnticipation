@@ -9,7 +9,7 @@ namespace Domain.Repositories.Concrete
 {
     public class EFTransactionAnticipationRepository : BaseRepository<TransactionAnticipation>, ITransactionAnticipationRepository
     {
-        public readonly AppDbContext _context;
+        private readonly AppDbContext _context;
         public EFTransactionAnticipationRepository(AppDbContext context) : base(context)
         {
             _context = context;

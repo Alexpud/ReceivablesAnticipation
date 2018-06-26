@@ -80,7 +80,7 @@ namespace ReceivablesAnticipation.Controllers
             TransactionAnticipation transactionAnticipation = new TransactionAnticipation()
             {
                 AnticipationResult = null,
-                Status = (int)Auxiliary.TransactionStatuses.WaitingForAnalysis, // Waiting for analysis
+                Status = (int)Auxiliary.TransactionStatuses.WaitingForAnalysis,
                 SolicitationDate = DateTime.Now,
                 TotalPassThroughValue = totalTransactionValue - transactionsAnticipationValue,
                 TotalTransactionValue = totalTransactionValue,
@@ -151,30 +151,6 @@ namespace ReceivablesAnticipation.Controllers
         }
         #endregion
 
-        #region GetTransactions
-        /// <summary>
-        /// Obtain all transactions
-        /// </summary>
-        /// <returns>
-        /// 200 - List of transactions
-        /// 204 - No transaction was found
-        /// </returns>
-        [HttpGet(Name = "GetTransactions")]
-        [ProducesResponseType(200, Type = typeof(IQueryable<TransactionDTO>))]
-        [Route("")]
-        public IActionResult GetTransactions()
-        {
-            var transactions = _transactionRepository.ObtainAll();
-            if (!transactions.Any())
-                return StatusCode((int)HttpStatusCode.NoContent);
-
-
-            var dtos = transactions.ProjectTo<TransactionDTO>(transactions);
-            return Ok(dtos);
-        }
-
-        #endregion
-
         #region GetAnticipatableTransactions
         /// <summary>
         /// Returns a list of anticipatable transactions to request anticipation
@@ -199,58 +175,5 @@ namespace ReceivablesAnticipation.Controllers
 
         #endregion
 
-        #region GetTransaction
-        /// <summary>
-        /// Returns the transaction with the following ID.
-        /// </summary>
-        /// <param name="transactionID"></param>
-        /// <returns>
-        /// 200 - Returns the transaction
-        /// 204 - Transaction was not found
-        /// </returns>
-        [HttpGet(Name = "GetTransaction")]
-        [Route("{transactionID}")]
-        [ProducesResponseType(200, Type = typeof(IQueryable<TransactionDTO>))]
-        public IActionResult GetTransaction(int transactionID)
-        {
-            var transaction = _transactionRepository.ObtainById(transactionID);
-            if (transaction == null)
-                return StatusCode((int)HttpStatusCode.NoContent);
-
-            var dto = _mapper.Map<Transaction, TransactionDTO>(transaction);
-            return Ok(dto);
-        }
-
-        #endregion
-
-        #region InsertTransaction
-        /// <summary>
-        /// Inserts the transaction
-        /// </summary>
-        /// <param name="dto"></param>
-        /// <returns>
-        /// 200 - Transaction was created
-        /// 304 - Transaction was not created
-        /// </returns>
-        [HttpPost("")]
-        [Route("")]
-        public IActionResult InsertTransaction(TransactionDTO dto)
-        {
-
-            var transacao = _mapper.Map<TransactionDTO, Transaction>(dto);
-
-            transacao.PassThroughValue = transacao.TransactionValue - (decimal)0.90;
-            transacao.PassThroughDate = DateTime.Now;
-
-            _transactionRepository.Insert(transacao);
-            int result = _transactionRepository.SaveChanges();
-
-            if (result == 0)
-                return StatusCode((int)HttpStatusCode.NotModified);
-
-            return CreatedAtAction("ObtainTransaction", new { id = transacao.TransactionID }, transacao);
-        }
-
-        #endregion
     }
 }
